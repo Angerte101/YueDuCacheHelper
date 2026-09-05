@@ -1,0 +1,32 @@
+name: Build YueDuCacheHelper APK
+on:
+  workflow_dispatch: # 网页手动触发构建
+
+jobs:
+  build:
+    runs-on: ubuntu‑latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      # 这个老项目需要JDK11，不能用17
+      - name: Setup JDK 11
+        uses: actions/setup‑java@v4
+        with:
+          java‑version: '11'
+          distribution: 'temurin'
+
+      - name: Setup Android SDK
+        uses: android‑actions/setup‑android@v3
+
+      - name: Grant execute permission gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Upload Artifact APK
+        uses: actions/upload‑artifact@v4
+        with:
+          name: YueDuCacheHelper‑debug‑apk
+          path: app/build/outputs/apk/debug/*.apk
